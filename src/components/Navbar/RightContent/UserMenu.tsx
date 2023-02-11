@@ -5,15 +5,18 @@ import {
   Icon,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
+import { signOut, User } from "firebase/auth";
 import React from "react";
 import { FaRedditSquare } from "react-icons/fa";
 import { VscAccount } from "react-icons/vsc";
 import { IoSparkles } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
+import { MdOutlineLogin } from "react-icons/md";
+import { auth } from "../../../firebase/clientApp";
 type UserMenuProps = {
   user?: User | null;
 };
@@ -27,9 +30,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         borderRadius={4}
         _hover={{ outline: "1px solid", outlineColor: "gray.200" }}
       >
-        {user ? (
+        <Flex align="center">
           <Flex align="center">
-            <Flex align="center">
+            {user ? (
               <>
                 <Icon
                   fontSize={24}
@@ -38,18 +41,34 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   as={FaRedditSquare}
                 />
               </>
-              <ChevronDownIcon />
-            </Flex>
+            ) : (
+              <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
+            )}
           </Flex>
-        ) : (
-          <Icon fontSize={24} color="gray.400" mr={1} as={VscAccount} />
-        )}
+          <ChevronDownIcon />
+        </Flex>
       </MenuButton>
       <MenuList>
-        <MenuItem>
-          <Flex>
-            <Icon as={CgProfile} />
+        <MenuItem
+          fontSize="10pt"
+          fontWeight={700}
+          _hover={{ bg: "blue.500", color: "white" }}
+        >
+          <Flex align="center">
+            <Icon fontSize={20} mr={2} as={CgProfile} />
             Profile
+          </Flex>
+        </MenuItem>
+        <MenuDivider />
+        <MenuItem
+          fontSize="10pt"
+          fontWeight={700}
+          _hover={{ bg: "blue.500", color: "white" }}
+          onClick={() => signOut(auth)}
+        >
+          <Flex align="center">
+            <Icon fontSize={20} mr={2} as={MdOutlineLogin} />
+            Log Out
           </Flex>
         </MenuItem>
       </MenuList>
