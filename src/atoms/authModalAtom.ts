@@ -4,7 +4,7 @@ export interface AuthModalState {
   open: boolean;
   view: "login" | "signup" | "resetPassword";
 }
-
+export type ModalView = "login" | "signup" | "resetPassword";
 const defaultModalState: AuthModalState = {
   open: false,
   view: "login",
