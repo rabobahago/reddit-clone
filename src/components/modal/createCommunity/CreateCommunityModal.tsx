@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,8 +9,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 
 type CreateCommunityModalProps = {
   open: boolean;
@@ -20,14 +22,48 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
   open,
   handleClose,
 }) => {
+  const [communityName, setCommunityName] = useState("");
   return (
     <>
       <Modal isOpen={open} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>here is the modal body</ModalBody>
+          <ModalHeader
+            display="flex"
+            flexDirection="column"
+            fontSize={15}
+            padding={3}
+          >
+            Create a Community
+          </ModalHeader>
+          <Box pl={3} pr={3}>
+            <ModalCloseButton />
+            <ModalBody display="flex" flexDirection="column" padding="10px 0px">
+              <Text fontWeight={600} fontSize={15}>
+                Name
+              </Text>
+              <Text fontSize={11} color="gray.500">
+                Community name including Capitalization cannot be changed
+              </Text>
+              <Text
+                position="relative"
+                top="28px"
+                left="10px"
+                width="20px"
+                color="gray.400"
+              >
+                r/
+              </Text>
+              <Input
+                position="relative"
+                value={communityName}
+                size="sm"
+                pl="22px"
+                onChange={() => {}}
+              />
+              <Text>Characters Remaining</Text>
+            </ModalBody>
+          </Box>
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleClose}>
