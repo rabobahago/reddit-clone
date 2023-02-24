@@ -84,6 +84,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
           doc(firestore, `users/${user?.uid}/communitySnippet`, communityName),
           {
             communityId: communityName,
+            isModerator: true,
           }
         );
       });
