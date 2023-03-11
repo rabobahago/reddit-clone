@@ -42,6 +42,7 @@ const useCommunityData = () => {
     } catch (error) {
       console.log("getMySnippets Error", error);
     }
+    setLoading(false);
   };
   useEffect(() => {
     if (!user) return;
@@ -53,6 +54,7 @@ const useCommunityData = () => {
   return {
     communityStateValue,
     onJoinOrLeaveCommunity,
+    loading,
   };
 };
 export default useCommunityData;
