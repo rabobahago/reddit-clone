@@ -3,8 +3,15 @@ import {
   Community,
   CommunitySnippet,
 } from "@/atoms/communitiesAtom";
+import Communities from "@/components/Navbar/directory/Communities";
 import { auth, firestore } from "@/firebase/clientApp";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  increment,
+  writeBatch,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
@@ -39,8 +46,9 @@ const useCommunityData = () => {
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.log("getMySnippets Error", error);
+      setError(error.message);
     }
     setLoading(false);
   };
@@ -48,7 +56,35 @@ const useCommunityData = () => {
     if (!user) return;
     getMySnippets();
   }, [user]);
-  const joinCommunity = (communityData: Community) => {};
+  const joinCommunity = async (communityData: Community) => {
+    try {
+      const batch = writeBatch(firestore);
+      const newSnippets: CommunitySnippet = {
+        communityId: communityData.id,
+        imageURL: communityData.imageURL || "",
+      };
+      batch.set(
+        doc(
+          firestore,
+          `users/${user?.uid}/communitySnippets`,
+          communityData.id
+        ),
+        newSnippets
+      );
+      batch.update(doc(firestore, "communities", communityData.id), {
+        numberOfMembers: increment(1),
+      });
+      await batch.commit();
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: [...prev.mySnippets, newSnippets],
+      }));
+    } catch (error: any) {
+      console.log("joinCommunityError", error);
+      setError(error.message);
+    }
+    setLoading(false);
+  };
   const leaveCommunity = (communityId: string) => {};
 
   return {
