@@ -80,12 +80,34 @@ const useCommunityData = () => {
         mySnippets: [...prev.mySnippets, newSnippets],
       }));
     } catch (error: any) {
-      console.log("joinCommunityError", error);
+      console.log("joinCommunityError", error.message);
       setError(error.message);
     }
     setLoading(false);
   };
-  const leaveCommunity = (communityId: string) => {};
+  const leaveCommunity = async (communityId: string) => {
+    try {
+      setLoading(true);
+      const batch = writeBatch(firestore);
+      batch.delete(
+        doc(firestore, `users/${user?.uid}/communitySnippets`, communityId)
+      );
+      batch.update(doc(firestore, "communities", communityId), {
+        numberOfMembers: increment(-1),
+      });
+      batch.commit();
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: prev.mySnippets.filter(
+          (item) => item.communityId !== communityId
+        ),
+      }));
+    } catch (error: any) {
+      console.log("leaveCommunityError ", error.message);
+      setError(error.message);
+    }
+    setLoading(false);
+  };
 
   return {
     communityStateValue,
